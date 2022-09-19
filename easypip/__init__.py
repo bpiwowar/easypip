@@ -1,5 +1,6 @@
 import json
 import subprocess
+from typing import List
 from pkg_resources import Requirement, parse_requirements
 from packaging.version import parse as parse_version
 import sys
@@ -56,9 +57,9 @@ class Installer:
 
 
     @staticmethod
-    def install(requirement: Requirement):
+    def install(requirement: Requirement, extra_args: List[str]=[]):
         logging.info("Installing %s", requirement)
-        subprocess.check_call([sys.executable, "-m", "pip", "install", str(requirement)])
+        subprocess.check_call([sys.executable, "-m", "pip", "install", str(requirement)] + extra_args)
         Installer._packages = None
 
     
@@ -82,3 +83,7 @@ def easyimport(spec: str, ask=True):
             return None
         
     return importlib.import_module(req.name)
+
+
+has_requirement = Installer.has_requirement
+install = Installer.install
