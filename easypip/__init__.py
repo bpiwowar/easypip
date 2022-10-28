@@ -64,7 +64,7 @@ class Installer:
 
     
 
-def easyimport(spec: str, ask=True):
+def easyimport(spec: str, ask=False):
     reqs = [req for req in parse_requirements(spec)]
     assert len(reqs) == 1, "only one package should be mentionned in the specification"
     req, = reqs
