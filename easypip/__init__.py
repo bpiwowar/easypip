@@ -32,7 +32,7 @@ class Installer:
 
     @staticmethod
     def has_requirement(requirement: Requirement):
-        """Returns true if the requirement is fullfilled"""
+        """Returns true if the requirement is fulfilled"""
         package = Installer.packages().get(requirement.project_name.lower(), None)
 
         if package is None:
@@ -66,7 +66,7 @@ class Installer:
 
 def easyimport(spec: str, ask=False):
     reqs = [req for req in parse_requirements(spec)]
-    assert len(reqs) == 1, "only one package should be mentionned in the specification"
+    assert len(reqs) == 1, "only one package should be mentioned in the specification"
     req, = reqs
 
     if not Installer.has_requirement(req):
