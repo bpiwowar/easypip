@@ -4,7 +4,7 @@ Ease the import / installation of packages in python and especially in notebooks
 
 Usage
 ```
-import easypip
+from easypip import easyimport
 
-torch = easypip("torch >= 1.8.0")
+torch = easyimport("torch >= 1.8.0")
 ```
