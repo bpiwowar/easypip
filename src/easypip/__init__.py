@@ -8,6 +8,7 @@ from packaging.version import parse as parse_version
 import sys
 import importlib
 import logging
+from ._version import __version__
 
 
 class IPython(Enum):

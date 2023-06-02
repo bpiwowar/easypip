@@ -1,0 +1,20 @@
+[project]
+name = "easypip"
+description = "Allows easier and lighter pip install within notebooks"
+authors = [
+    {name = "Benjamin Piwowarski", email = "benjamin@piwowarski.fr"},
+]
+dependencies = []
+readme = {file = "README.md", content-type = "text/markdown"}
+dynamic = ["version"]
+
+[project.urls]
+homepage = "https://github.com/bpiwowar/easypip"
+
+[build-system]
+requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+write_to = "src/easypip/_version.py"
+fallback_version = "0.0.0-dev"
