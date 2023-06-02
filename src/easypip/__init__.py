@@ -85,9 +85,16 @@ class Installer:
     @staticmethod
     def install(requirement: Requirement, extra_args: List[str] = []):
         logging.info("Installing %s", requirement)
-        subprocess.check_call(
-            [sys.executable, "-m", "pip", "install", str(requirement)] + extra_args
-        )
+        try:
+            subprocess.run(
+                [sys.executable, "-m", "pip", "install", str(requirement)] + extra_args,
+                capture_output=True, check=True
+            )
+        except subprocess.CalledProcessError as e:
+            logging.error("pip install %s returned an error:", str(requirement))
+            logging.error("%s", e.stdout.decode("utf-8"))
+            logging.error("%s", e.stderr.decode("utf-8"))
+            raise
         Installer._packages = None
 
 def _install(req: Requirement, ask: bool):
