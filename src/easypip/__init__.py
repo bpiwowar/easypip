@@ -1,13 +1,16 @@
 from enum import Enum
 from functools import cache
+from itertools import chain
 import json
 import subprocess
-from typing import List
+from typing import Dict, List
 from pkg_resources import Requirement, parse_requirements
 from packaging.version import parse as parse_version
 import sys
 import importlib
 import logging
+
+from easypip.platform import cuda_version
 from ._version import __version__
 
 
@@ -83,15 +86,25 @@ class Installer:
         return True
 
     @staticmethod
-    def install(requirement: Requirement, extra_args: List[str] = []):
+    def install(requirement: Requirement, extra_args: List[str] = None):
+        extra_args = extra_args or []
+
+        # FIXME: find a better way to do that
+        if cuda_version() is None:
+            pass
+        elif cuda_version() >= parse_version("11.8"):
+            extra_args.extend(["--extra-index-url", "https://download.pytorch.org/whl/cu118"])
+
         print(f"[easypip] Installing {requirement}", file=sys.stderr if is_notebook() else sys.stdout)
+
+        command = [sys.executable, "-m", "pip", "install", str(requirement)] + extra_args
         try:
             subprocess.run(
-                [sys.executable, "-m", "pip", "install", str(requirement)] + extra_args,
+                command,
                 capture_output=True, check=True
             )
         except subprocess.CalledProcessError as e:
-            logging.error("pip install %s returned an error:", str(requirement))
+            logging.error("pip install returned an error for: %s", " ".join(command))
             logging.error("%s", e.stdout.decode("utf-8"))
             logging.error("%s", e.stderr.decode("utf-8"))
             raise
