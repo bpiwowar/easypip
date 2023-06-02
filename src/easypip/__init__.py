@@ -84,7 +84,7 @@ class Installer:
 
     @staticmethod
     def install(requirement: Requirement, extra_args: List[str] = []):
-        logging.info("Installing %s", requirement)
+        print(f"[easypip] Installing {requirement}", file=sys.stderr)
         try:
             subprocess.run(
                 [sys.executable, "-m", "pip", "install", str(requirement)] + extra_args,
