@@ -84,7 +84,7 @@ class Installer:
 
     @staticmethod
     def install(requirement: Requirement, extra_args: List[str] = []):
-        print(f"[easypip] Installing {requirement}", file=sys.stderr)
+        print(f"[easypip] Installing {requirement}", file=sys.stderr if is_notebook() else sys.stdout)
         try:
             subprocess.run(
                 [sys.executable, "-m", "pip", "install", str(requirement)] + extra_args,
