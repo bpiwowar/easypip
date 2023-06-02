@@ -95,7 +95,7 @@ def _install(req: Requirement, ask: bool):
         if ask:
             answer = ""
             while answer not in ["y", "n"]:
-                answer = input(f"Module is not installed. Install {spec}? [y/n] ").lower()
+                answer = input(f"Module is not installed. Install {req.name}? [y/n] ").lower()
         
         if not ask or answer == "y":
             Installer.install(req)
