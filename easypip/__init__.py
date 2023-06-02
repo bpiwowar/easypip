@@ -62,19 +62,12 @@ class Installer:
         subprocess.check_call([sys.executable, "-m", "pip", "install", str(requirement)] + extra_args)
         Installer._packages = None
 
-    
-
-def easyimport(spec: str, ask=False):
-    reqs = [req for req in parse_requirements(spec)]
-    assert len(reqs) == 1, "only one package should be mentioned in the specification"
-    req, = reqs
-
+def _install(req: Requirement, ask: bool):
     if not Installer.has_requirement(req):
         if ask:
             answer = ""
             while answer not in ["y", "n"]:
                 answer = input(f"Module is not installed. Install {spec}? [y/n] ").lower()
-                
         
         if not ask or answer == "y":
             Installer.install(req)
@@ -82,6 +75,20 @@ def easyimport(spec: str, ask=False):
             logging.warning("Not installing as required")
             return None
         
+def easyinstall(spec: str, ask=False):
+    reqs = [req for req in parse_requirements(spec)]
+    assert len(reqs) == 1, "only one package should be mentioned in the specification"
+    req, = reqs
+    _install(req, ask)
+
+
+def easyimport(spec: str, ask=False):
+    reqs = [req for req in parse_requirements(spec)]
+    assert len(reqs) == 1, "only one package should be mentioned in the specification"
+    req, = reqs
+
+    _install(req, ask)
+
     return importlib.import_module(req.name)
 
 
