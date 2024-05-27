@@ -64,6 +64,8 @@ class Installer:
     def has_requirement(requirement: Requirement):
         """Returns true if the requirement is fulfilled"""
         package = Installer.packages().get(requirement.project_name.lower(), None)
+        if package is None:
+            package = Installer.packages().get(requirement.unsafe_name.lower(), None)
 
         if package is None:
             return False
