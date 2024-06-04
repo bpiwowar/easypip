@@ -1,9 +1,8 @@
 from enum import Enum
-from functools import cache
-from itertools import chain
+from functools import lru_cache
 import json
 import subprocess
-from typing import Dict, List
+from typing import List
 from pkg_resources import Requirement, parse_requirements
 from packaging.version import parse as parse_version
 import sys
@@ -22,7 +21,7 @@ class IPython(Enum):
     GOOGLE_COLAB = 4
 
 
-@cache
+@lru_cache()
 def ipython():
     """Returns true if running in google Colab"""
     try:
