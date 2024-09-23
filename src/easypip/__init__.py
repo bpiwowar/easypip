@@ -68,20 +68,21 @@ class Installer:
                     [sys.executable, "-m", "pip", "list", "--format", "json"]
                 ).decode()
             ):
-                Installer._packages[p["name"].lower()] = p
+                Installer._packages[p["name"].lower().replace("_", "-")] = p
         return Installer._packages
 
     @staticmethod
     def has_requirement(requirement: Requirement):
         """Returns true if the requirement is fulfilled"""
-        package = Installer.packages().get(requirement.name.lower(), None)
+        package_id = requirement.name.lower().replace("_", "-")
+        package = Installer.packages().get(package_id, None)
         if package is None:
-            package = Installer.packages().get(requirement.name.lower(), None)
+            package = Installer.packages().get(package_id, None)
 
         if package is None:
             return False
 
-        version = parse_version(package["version"])
+        version = package["version"]
         return all(specifier.contains(version) for specifier in requirement.specifier)
 
     @staticmethod
