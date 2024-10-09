@@ -83,7 +83,10 @@ class Installer:
             return False
 
         version = package["version"]
-        return all(specifier.contains(version) for specifier in requirement.specifier)
+        return all(
+            specifier.contains(version, prereleases=True)
+            for specifier in requirement.specifier
+        )
 
     @staticmethod
     def install(requirement: Requirement, extra_args: List[str] = None):
