@@ -1,5 +1,5 @@
 from enum import Enum
-from functools import lru_cache
+from functools import cache, lru_cache
 import json
 import re
 import subprocess
@@ -20,6 +20,18 @@ class IPython(Enum):
     IPYTHON = 2
     JUPYTER = 3
     GOOGLE_COLAB = 4
+
+
+@cache
+def get_pip_command() -> list[str]:
+    # Check if uv is available
+    try:
+        subprocess.check_output(["uv", "self", "version"])
+        logging.info("Using uv pip")
+        return ["uv", "pip"]
+    except subprocess.CalledProcessError:
+        logging.info("Using uv")
+        return [sys.executable, "-m", "pip"]
 
 
 @lru_cache()
@@ -65,7 +77,7 @@ class Installer:
             Installer._packages = {}
             for p in json.loads(
                 subprocess.check_output(
-                    [sys.executable, "-m", "pip", "list", "--format", "json"]
+                    get_pip_command() + ["list", "--format", "json"]
                 ).decode()
             ):
                 Installer._packages[p["name"].lower().replace("_", "-")] = p
@@ -104,13 +116,14 @@ class Installer:
             file=sys.stderr if is_notebook() else sys.stdout,
         )
 
-        command = [
-            sys.executable,
-            "-m",
-            "pip",
-            "install",
-            str(requirement),
-        ] + extra_args
+        command = (
+            get_pip_command()
+            + [
+                "install",
+                str(requirement),
+            ]
+            + extra_args
+        )
         try:
             subprocess.run(command, capture_output=True, check=True)
         except subprocess.CalledProcessError as e:
