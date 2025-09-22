@@ -29,7 +29,7 @@ def get_pip_command() -> list[str]:
         subprocess.check_output(["uv", "self", "version"])
         logging.info("Using uv pip")
         return ["uv", "pip"]
-    except subprocess.CalledProcessError:
+    except (subprocess.CalledProcessError, FileNotFoundError):
         logging.info("Using uv")
         return [sys.executable, "-m", "pip"]
 
